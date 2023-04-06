@@ -6,7 +6,7 @@ const CONFIG = {
     // The tags to include the generated JS and CSS will be automatically injected in the HTML template
     // See https://github.com/jantimon/html-webpack-plugin
     indexHtmlTemplate: './src/Client/index.html',
-    fsharpEntry: './src/Client/output/App.js',
+    fsharpEntry: './src/Client/output/App.jsx',
     outputDir: './deploy/public',
     assetsDir: './src/Client/public',
     devServerPort: 8080,
@@ -30,7 +30,7 @@ const TEST_CONFIG = {
     // The tags to include the generated JS and CSS will be automatically injected in the HTML template
     // See https://github.com/jantimon/html-webpack-plugin
     indexHtmlTemplate: 'tests/Client/index.html',
-    fsharpEntry: 'tests/Client/output/Client.Tests.js',
+    fsharpEntry: 'tests/Client/output/Client.Tests.jsx',
     outputDir: 'tests/Client',
     assetsDir: 'tests/Client',
     devServerPort: 8081,
@@ -66,7 +66,7 @@ module.exports = function(env, arg) {
         output: {
             path: resolve(config.outputDir),
             publicPath: '/',
-            filename: isProduction ? '[name].[contenthash].js' : '[name].js'
+            filename: isProduction ? '[name].[contenthash].jsx' : '[name].jsx'
         },
         mode: mode,
         devtool: isProduction ? 'source-map' : 'eval-source-map',
@@ -126,7 +126,7 @@ module.exports = function(env, arg) {
                     use: ['file-loader']
                 },
                 {
-                    test: /\.js$/,
+                    test: /\.(js|jsx)$/,
                     enforce: 'pre',
                     use: ['source-map-loader'],
                 }
