@@ -36,6 +36,8 @@ let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
         { model with Input = "" }, cmd
     | AddedTodo todo -> { model with Todos = model.Todos @ [ todo ] }, Cmd.none
 
+open Fable.Core
+// open Fable.Core.JsInterop
 open Feliz
 open Feliz.Bulma
 
@@ -53,68 +55,68 @@ let navBrand =
         ]
     ]
 
+[<JSX.Component>]
 let containerBox (model: Model) (dispatch: Msg -> unit) =
-    Bulma.box [
-        Bulma.content [
-            Html.ol [
-                for todo in model.Todos do
-                    Html.li [ prop.text todo.Description ]
-            ]
-        ]
-        Bulma.field.div [
-            field.isGrouped
-            prop.children [
-                Bulma.control.p [
-                    control.isExpanded
-                    prop.children [
-                        Bulma.input.text [
-                            prop.value model.Input
-                            prop.placeholder "What needs to be done?"
-                            prop.onChange (fun x -> SetInput x |> dispatch)
-                        ]
-                    ]
-                ]
-                Bulma.control.p [
-                    Bulma.button.a [
-                        color.isPrimary
-                        prop.disabled (Todo.isValid model.Input |> not)
-                        prop.onClick (fun _ -> dispatch AddTodo)
-                        prop.text "Add"
-                    ]
-                ]
-            ]
-        ]
-    ]
+    JSX.jsx
+        $"""
+        <div className="box">
+            <div className="content">
+                <ol>
+                    {model.Todos
+                     |> List.map (fun todo -> Html.li [ prop.text todo.Description ])}
+                </ol>
+            </div>
+            <div className="field is-grouped">
+                <p className="control is-expanded">
+                    <text   className="input"
+                            value="{model.Input}"
+                            placeholder="What needs to be done?"
+                            onChange={(fun x -> SetInput x |> dispatch)}/>
+                </p>
+                <p className="control">
+                    <a  className="button is-primary"
+                        disabled={Todo.isValid model.Input |> not}
+                        onClick={fun _ -> dispatch AddTodo} />
+                </p>
+            </div>
+        </div>
+    """
+    |> toReact
 
 let view (model: Model) (dispatch: Msg -> unit) =
-    Bulma.hero [
-        hero.isFullHeight
-        color.isPrimary
-        prop.style [
-            style.backgroundSize "cover"
-            style.backgroundImageUrl "https://unsplash.it/1200/900?random"
-            style.backgroundPosition "no-repeat center center fixed"
-        ]
-        prop.children [
-            Bulma.heroHead [
-                Bulma.navbar [
-                    Bulma.container [ navBrand ]
-                ]
-            ]
-            Bulma.heroBody [
-                Bulma.container [
-                    Bulma.column [
-                        column.is6
-                        column.isOffset3
-                        prop.children [
-                            Bulma.title [
-                                text.hasTextCentered
-                                prop.text "safe_template_jsx"
-                            ]
-                            containerBox model dispatch
-                        ]
-                    ]
-                ]
-            ]
-        ]
-    ]
+    JSX.jsx
+        $"""
+        <div    className="hero is-full-height is-primary"
+                style="background-size:cover;background-image-url:https://unsplash.it/1200/900?random;background-position:no-repeat center center fixed">
+            <div className="hero-head">
+                <div className="nav-bar">
+                    <div className="container">
+                        <div className="navbar-brand">
+                            <a className="navbar-item is-active" href="https://safe-stack.github.io">
+                                <img src="/favicon.png" alt="Logo"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="hero-body">
+                <div className="container">
+                    <div className="column is-6 is-offset-3">
+                        <div className="title has-text-centered">
+                            safe_template_jsx
+                        </div>
+                        {containerBox model dispatch}
+                    </div>
+                </div>
+            </div>
+        </div>
+    """
+    |> toReact
+
+open Fable.React
+
+[<JSX.Component>]
+let App () =
+    let model, dispatch = React.useElmish (init, update, arg = ())
+
+    view model dispatch

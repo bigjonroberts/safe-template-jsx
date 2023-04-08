@@ -128,7 +128,7 @@ module.exports = function(env, arg) {
                 {
                     test: /\.(js|jsx)$/,
                     enforce: 'pre',
-                    use: ['source-map-loader'],
+                    use: ['babel-loader'],
                 }
             ]
         }
